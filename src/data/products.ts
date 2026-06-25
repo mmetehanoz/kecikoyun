@@ -1,0 +1,278 @@
+import type { Product, Testimonial, FAQItem } from '@/types';
+
+export const products: Product[] = [
+  {
+    id: 'kucukbas-1',
+    name: 'Küçükbaş Kurban',
+    type: 'kucukbas',
+    typeLabel: 'Küçükbaş',
+    location: 'yurt-ici',
+    locationLabel: 'Yurt İçi',
+    price: 6500,
+    description:
+      'Uzman kasaplarımız tarafından dini kurallara uygun şekilde kesilen, sağlıklı ve bakımlı küçükbaş kurbanınız. Kesim sürecini video ile belgeleyebilir, etlerinizi ihtiyaç sahiplerine ulaştırabilirsiniz.',
+    shortDescription: 'Sağlıklı, bakımlı, dinen uygun kesim',
+    stock: 24,
+    slaughterDate: '2025-06-06',
+    videoAvailable: true,
+    featured: true,
+    image: '/images/kucukbas.jpg',
+    weight: '35-45 kg',
+    tags: ['kurban', 'küçükbaş', 'koyun', 'vekalet'],
+  },
+  {
+    id: 'buyukbas-hisse-1',
+    name: 'Büyükbaş Hisse',
+    type: 'buyukbas-hisse',
+    typeLabel: 'Büyükbaş Hisse',
+    location: 'yurt-ici',
+    locationLabel: 'Yurt İçi',
+    price: 5500,
+    description:
+      'Büyükbaş kurbanın 1/7 hissesi. Toplam 7 hissedar ile kesilen büyükbaş kurban, dini ölçülere uygun olarak gerçekleştirilir. Hisseniz için özel vekalet belgesi düzenlenir.',
+    shortDescription: '1/7 hisse — büyükbaş kurban',
+    stock: 42,
+    slaughterDate: '2025-06-06',
+    videoAvailable: true,
+    featured: true,
+    image: '/images/buyukbas.jpg',
+    shareCount: 7,
+    tags: ['kurban', 'büyükbaş', 'hisse', 'vekalet'],
+  },
+  {
+    id: 'adak-1',
+    name: 'Adak Kurbanı',
+    type: 'adak',
+    typeLabel: 'Adak Kurbanı',
+    location: 'yurt-ici',
+    locationLabel: 'Yurt İçi',
+    price: 6500,
+    description:
+      'Adadığınız kurban için profesyonel vekalet hizmeti. Adak kurbanınız dini ölçülere uygun şekilde kesilir, etler ihtiyaç sahiplerine dağıtılır veya size teslim edilir.',
+    shortDescription: 'Adak niyetiyle vekalet kesimi',
+    stock: 18,
+    slaughterDate: '2025-06-06',
+    videoAvailable: true,
+    featured: true,
+    image: '/images/adak.jpg',
+    weight: '35-45 kg',
+    tags: ['adak', 'kurban', 'vekalet'],
+  },
+  {
+    id: 'akika-1',
+    name: 'Akika Kurbanı',
+    type: 'akika',
+    typeLabel: 'Akika Kurbanı',
+    location: 'yurt-ici',
+    locationLabel: 'Yurt İçi',
+    price: 6500,
+    description:
+      'Yeni doğan çocuğunuz için akika kurbanı hizmeti. Erkek çocuk için 2, kız çocuk için 1 kurbanlık seçebilirsiniz. Kesim sonrası video ve belge gönderilir.',
+    shortDescription: 'Yeni doğan için şükür ve bereket',
+    stock: 15,
+    slaughterDate: '2025-06-06',
+    videoAvailable: true,
+    featured: true,
+    image: '/images/akika.jpg',
+    weight: '35-45 kg',
+    tags: ['akika', 'yeni doğan', 'kurban', 'vekalet'],
+  },
+  {
+    id: 'sukur-1',
+    name: 'Şükür Kurbanı',
+    type: 'sukur',
+    typeLabel: 'Şükür Kurbanı',
+    location: 'yurt-ici',
+    locationLabel: 'Yurt İçi',
+    price: 6500,
+    description:
+      'Bir nimet, sağlık veya başarı vesilesiyle şükrünüzü kurbanla ifade edin. Şükür kurbanınız uzman kasaplarımız tarafından kesilir, etler ihtiyaç sahiplerine ulaştırılır.',
+    shortDescription: 'Nimetlere şükür için kurban',
+    stock: 20,
+    slaughterDate: '2025-06-06',
+    videoAvailable: true,
+    featured: false,
+    image: '/images/sukur.jpg',
+    weight: '35-45 kg',
+    tags: ['şükür', 'kurban', 'vekalet'],
+  },
+  {
+    id: 'sadaka-1',
+    name: 'Sadaka Kurbanı',
+    type: 'sadaka',
+    typeLabel: 'Sadaka Kurbanı',
+    location: 'yurt-ici',
+    locationLabel: 'Yurt İçi',
+    price: 6500,
+    description:
+      'İhtiyaç sahiplerine et ulaştırmak amacıyla kesilen sadaka kurbanı. Tüm etler doğrudan ihtiyaç sahibi ailelere teslim edilir. Sosyal sorumluluk bilinci ile hareket edin.',
+    shortDescription: 'Tamamen ihtiyaç sahiplerine',
+    stock: 30,
+    slaughterDate: '2025-06-06',
+    videoAvailable: true,
+    featured: false,
+    image: '/images/sadaka.jpg',
+    weight: '35-45 kg',
+    tags: ['sadaka', 'ihtiyaç', 'kurban'],
+  },
+  {
+    id: 'kucukbas-yurt-disi',
+    name: 'Küçükbaş Kurban — Yurt Dışı',
+    type: 'kucukbas',
+    typeLabel: 'Küçükbaş',
+    location: 'yurt-disi',
+    locationLabel: 'Yurt Dışı',
+    price: 4500,
+    description:
+      'Yurt dışında ihtiyaç sahiplerine ulaştırılmak üzere kesilen küçükbaş kurban. Afrika, Orta Doğu ve Balkanlar\'da muhtaç ailelere teslim edilir.',
+    shortDescription: 'Yurt dışı ihtiyaç sahiplerine',
+    stock: 50,
+    slaughterDate: '2025-06-06',
+    videoAvailable: true,
+    featured: false,
+    image: '/images/kucukbas-yurt-disi.jpg',
+    weight: '30-40 kg',
+    tags: ['yurt dışı', 'kurban', 'küçükbaş', 'yardım'],
+  },
+  {
+    id: 'buyukbas-yurt-disi',
+    name: 'Büyükbaş Hisse — Yurt Dışı',
+    type: 'buyukbas-hisse',
+    typeLabel: 'Büyükbaş Hisse',
+    location: 'yurt-disi',
+    locationLabel: 'Yurt Dışı',
+    price: 4000,
+    description:
+      'Yurt dışında 1/7 büyükbaş hisse. Muhtaç coğrafyalarda ihtiyaç sahibi ailelere ulaştırılır. Kesim belgesi ve video temin edilir.',
+    shortDescription: '1/7 hisse — yurt dışı kesim',
+    stock: 35,
+    slaughterDate: '2025-06-06',
+    videoAvailable: true,
+    featured: false,
+    image: '/images/buyukbas-yurt-disi.jpg',
+    shareCount: 7,
+    tags: ['yurt dışı', 'kurban', 'büyükbaş', 'hisse'],
+  },
+];
+
+export const testimonials: Testimonial[] = [
+  {
+    id: 't1',
+    name: 'Mehmet Yılmaz',
+    city: 'İstanbul',
+    rating: 5,
+    comment:
+      'Geçen yıl ilk kez Keçikoyun üzerinden kurban kestirdim. Kesim videosu anında geldi, süreç çok şeffaftı. Kesinlikle tavsiye ederim.',
+    date: '2024-07-01',
+    verified: true,
+  },
+  {
+    id: 't2',
+    name: 'Fatma Kaya',
+    city: 'Ankara',
+    rating: 5,
+    comment:
+      'Adak kurbanımı buradan verdim, hem telefon hem WhatsApp üzerinden anlık bildirim geldim. Çok profesyonel bir hizmet.',
+    date: '2024-07-03',
+    verified: true,
+  },
+  {
+    id: 't3',
+    name: 'Ahmet Demir',
+    city: 'İzmir',
+    rating: 5,
+    comment:
+      'Yurt dışı kesim tercih ettim, Afrika\'daki ihtiyaç sahiplerine ulaşıldığına dair belgeler geldi. Gönül rahatlığıyla öneriyorum.',
+    date: '2024-07-05',
+    verified: true,
+  },
+  {
+    id: 't4',
+    name: 'Zeynep Arslan',
+    city: 'Bursa',
+    rating: 5,
+    comment:
+      'Akika kurbanımı buradan aldım. İki çocuk için hem kolay hem uygun fiyatlı. Sepet sistemi çok kullanıcı dostu.',
+    date: '2024-07-08',
+    verified: true,
+  },
+  {
+    id: 't5',
+    name: 'Hasan Öztürk',
+    city: 'Konya',
+    rating: 4,
+    comment:
+      'Büyükbaş hisse satın aldım. Ödeme kolayı, vekalet formu net. Bir dahaki kurban alımımda yine buradan yapacağım.',
+    date: '2024-07-10',
+    verified: true,
+  },
+  {
+    id: 't6',
+    name: 'Elif Şahin',
+    city: 'Antalya',
+    rating: 5,
+    comment:
+      'Hem kendi adıma hem de annem adına kurban kestirdim. İkisi için ayrı vekalet belgesi geldi. Çok memnunum.',
+    date: '2024-07-12',
+    verified: true,
+  },
+];
+
+export const faqs: FAQItem[] = [
+  {
+    id: 'f1',
+    question: 'Vekalet ile kurban kestirmek dinen geçerli midir?',
+    answer:
+      'Evet, dinen geçerlidir. İslam fıkhında kurban kesmek için bir vekil tayin etmek caizdir. Vekilin kurbanı niyet ederek kesmesi yeterlidir. Keçikoyun platformunda tüm kesimler dini ölçülere uygun olarak gerçekleştirilir.',
+    category: 'dini',
+  },
+  {
+    id: 'f2',
+    question: 'Kesim videosu nasıl ve ne zaman ulaşır?',
+    answer:
+      'Kesim tamamlandıktan sonra 24 saat içinde siparişinizde belirttiğiniz telefon numarasına WhatsApp üzerinden video gönderilir. Ayrıca sipariş takip sayfanızdan da izleyebilirsiniz.',
+    category: 'hizmet',
+  },
+  {
+    id: 'f3',
+    question: 'Etlerin ihtiyaç sahiplerine ulaştırıldığını nasıl bileceğim?',
+    answer:
+      'Etlerin dağıtım sürecinden fotoğraf ve konum belgesi temin ediliyor. Bunlar sipariş takip sayfanıza ekleniyor. İhtiyaç sahibi ailelerle yapılan fotoğraflı teslim tutanakları da paylaşılmaktadır.',
+    category: 'hizmet',
+  },
+  {
+    id: 'f4',
+    question: 'Kurbanlıklar nasıl seçiliyor?',
+    answer:
+      'Tüm kurbanlıklar uzman veterinerler tarafından muayene edilip sağlık sertifikası alınmış hayvanlardır. Dini kurallara göre belirlenen yaş ve ağırlık kriterleri sağlanmaktadır.',
+    category: 'hayvan',
+  },
+  {
+    id: 'f5',
+    question: 'Yurt dışı kesim hangi ülkelerde yapılıyor?',
+    answer:
+      'Yurt dışı kesimler başta Afrika (Sudan, Somali, Nijer), Orta Doğu (Gazze, Yemen, Suriye) ve Balkanlar (Bosna, Kosova) olmak üzere 12 ülkede gerçekleştirilmektedir.',
+    category: 'lokasyon',
+  },
+  {
+    id: 'f6',
+    question: 'Ödeme güvenli mi?',
+    answer:
+      'Ödeme altyapımız SSL sertifikalı ve 3D Secure desteklidir. Kredi kartı, banka kartı ve EFT ile ödeme yapabilirsiniz. Kart bilgileriniz sunucularımızda saklanmaz.',
+    category: 'odeme',
+  },
+  {
+    id: 'f7',
+    question: 'Büyükbaş hissede kaç kişi ortak olur?',
+    answer:
+      'Büyükbaş kurbanı en fazla 7 kişi ortak olabilir. Satın aldığınız hisse için 6 farklı kişiyle birlikte aynı hayvanda kesim yapılır. Her hissedar için ayrı vekalet belgesi düzenlenir.',
+    category: 'dini',
+  },
+  {
+    id: 'f8',
+    question: 'Siparişimi iptal edebilir miyim?',
+    answer:
+      'Kesim tarihinden 5 gün öncesine kadar iade talebinde bulunabilirsiniz. Kesim tarihi yaklaştıktan sonra iptal mümkün olmayabilir. Detaylı bilgi için müşteri hizmetlerimizle iletişime geçin.',
+    category: 'iptal',
+  },
+];
