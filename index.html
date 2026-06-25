@@ -2,7 +2,16 @@
 <html lang="tr">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/kecikoyun/favicon.svg" />
+    <!-- GitHub Pages SPA redirect handler -->
+    <script>
+      (function(l){
+        if(l.search[1]=='/'){
+          var decoded=l.search.slice(1).split('&').map(function(s){return s.replace(/~and~/g,'&');}).join('?');
+          window.history.replaceState(null,null,l.pathname.slice(0,-1)+decoded+(l.hash||''));
+        }
+      }(window.location));
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Güvenilir kurban satışı ve vekalet hizmeti. Küçükbaş, büyükbaş, adak, akika kurbanları. Kesim videosu ve sipariş takibi ile profesyonel hizmet." />
     <meta name="keywords" content="kurban, kurban satışı, vekalet, adak kurbanı, akika, küçükbaş, büyükbaş, kesim" />
