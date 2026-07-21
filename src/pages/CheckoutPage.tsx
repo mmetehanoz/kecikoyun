@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useState } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShieldCheck, CreditCard, Building2, ArrowLeft, Check } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { formatPrice, generateOrderId } from '@/lib/utils';
 import type { OrderFormData } from '@/types';
+import TurnstileWidget from '../components/security/TurnstileWidget';
 
 const inputClass =
   'w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-green/30 focus:border-brand-green transition placeholder-gray-400';
@@ -15,6 +16,8 @@ export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCartStore();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
+  const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY;
+
   const [form, setForm] = useState<OrderFormData>({
     firstName: '',
     lastName: '',
@@ -28,12 +31,36 @@ export default function CheckoutPage() {
     acceptKvkk: false,
   });
 
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileError, setTurnstileError] = useState('');
+
+  const handleTurnstileVerify = useCallback((token: string) => {
+    setTurnstileToken(token);
+    setTurnstileError('');
+  }, []);
+
+  const handleTurnstileExpire = useCallback(() => {
+    setTurnstileToken('');
+    setTurnstileError('Güvenlik doğrulamasının süresi doldu. Lütfen tekrar deneyin.');
+  }, []);
+
+  const handleTurnstileError = useCallback(() => {
+    setTurnstileToken('');
+    setTurnstileError('Güvenlik doğrulaması tamamlanamadı.');
+  }, []);
+
   const set = (key: keyof OrderFormData, value: string | boolean) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.acceptTerms || !form.acceptKvkk) return;
+
+    if (turnstileSiteKey && !turnstileToken) {
+      setTurnstileError('Lütfen güvenlik doğrulamasını tamamlayın.');
+      return;
+    }
+
     setSubmitting(true);
     await new Promise((r) => setTimeout(r, 1500));
     const orderId = generateOrderId();
@@ -42,8 +69,7 @@ export default function CheckoutPage() {
   };
 
   if (items.length === 0) {
-    navigate('/sepet');
-    return null;
+    return <Navigate to="/sepet" replace />;
   }
 
   return (
@@ -314,6 +340,16 @@ export default function CheckoutPage() {
                     <span>Toplam</span>
                     <span className="text-brand-green">{formatPrice(totalPrice())}</span>
                   </div>
+                </div>
+
+                <div className="mb-4">
+                  <TurnstileWidget
+                    siteKey={turnstileSiteKey}
+                    onVerify={handleTurnstileVerify}
+                    onExpire={handleTurnstileExpire}
+                    onError={handleTurnstileError}
+                    error={turnstileError}
+                  />
                 </div>
 
                 <button

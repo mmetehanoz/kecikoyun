@@ -1,32 +1,34 @@
-# React + TypeScript + Vite
+# Kecikoyun
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+## Canliya Alma
 
-Currently, two official plugins are available:
+1. Proje kokunde `.env` dosyasini olusturun:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+   ```env
+   VITE_BASE_PATH=/
+   VITE_TURNSTILE_SITE_KEY=site_key_buraya
+   TURNSTILE_SECRET_KEY=secret_key_buraya
+   ```
 
-## React Compiler
+   `VITE_TURNSTILE_SITE_KEY` herkese acik site key'dir. `TURNSTILE_SECRET_KEY` sadece backend ortam degiskeni olarak kalmalidir; `src/` altinda kullanmayin ve istemciye gondermeyin.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+2. Cloudflare Turnstile panelinde canli alan adinizi widget'in hostname listesine ekleyin. Yerel test icin `localhost` de ekleyin.
 
-## Expanding the Oxlint configuration
+3. Uretim paketini olusturun:
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+   ```bash
+   npm ci
+   npm run release:check
+   ```
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+   Bu komut lint ve TypeScript kontrollerini calistirir, ardindan yayinlanacak dosyalari `dist/` altina uretir.
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+4. Barindirma saglayicinizda build komutu olarak `npm run release:check`, yayin dizini olarak `dist` kullanin. Ortam degiskenlerini saglayicinin gizli degisken ayarlarindan ekleyin; `.env` dosyasini yuklemeyin.
+
+5. React Router icin sunucuda tum bilinmeyen yollar `index.html` dosyasina yonlendirilmelidir. Netlify'de `/* /index.html 200`, Nginx'te `try_files $uri $uri/ /index.html;` ayarini kullanin.
+
+6. Site alt dizinde yayinlanacaksa `VITE_BASE_PATH` degerini `/alt-dizin/` biciminde ayarlayin. Kendi alan adinizin kokunde yayin icin `/` kullanin.
+
+## Turnstile Guvenligi
+
+Widget token'i istemcide alinmaktadir. Gercek koruma icin siparis olusturan backend endpoint'i token'i Cloudflare Siteverify API'sine `TURNSTILE_SECRET_KEY` ile gondermeli ve `success: true` olmadan siparisi kabul etmemelidir.
