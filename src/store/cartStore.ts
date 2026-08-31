@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { getCountryPrice } from '@/lib/utils';
 import type { CartItem, Product, CartItemProxyInfo, DeliveryOption } from '@/types';
 
 interface CartStore {
@@ -10,7 +11,9 @@ interface CartStore {
     product: Product,
     proxy: CartItemProxyInfo,
     wantsVideo: boolean,
-    delivery: DeliveryOption
+    delivery: DeliveryOption,
+    country: string,
+    niyet: string
   ) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
@@ -29,7 +32,7 @@ export const useCartStore = create<CartStore>()(
       items: [],
       isOpen: false,
 
-      addItem: (product, proxy, wantsVideo, delivery) => {
+      addItem: (product, proxy, wantsVideo, delivery, country, niyet) => {
         set((state) => {
           const exists = state.items.find((i) => i.product.id === product.id);
           if (exists) {
@@ -42,7 +45,10 @@ export const useCartStore = create<CartStore>()(
             };
           }
           return {
-            items: [...state.items, { product, quantity: 1, proxy, wantsVideo, delivery }],
+            items: [
+              ...state.items,
+              { product, quantity: 1, proxy, wantsVideo, delivery, country, niyet },
+            ],
           };
         });
         set({ isOpen: true });
@@ -70,8 +76,11 @@ export const useCartStore = create<CartStore>()(
 
       totalItems: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
       totalPrice: () =>
-        get().items.reduce((sum, i) => sum + i.product.price * i.quantity, 0),
+        get().items.reduce(
+          (sum, i) => sum + getCountryPrice(i.product, i.country) * i.quantity,
+          0
+        ),
     }),
-    { name: 'kecikoyun-cart' }
+    { name: 'kecikoyun-cart', version: 2, migrate: () => ({ items: [], isOpen: false }) }
   )
 );

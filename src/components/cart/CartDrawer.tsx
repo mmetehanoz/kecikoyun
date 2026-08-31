@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Trash2, Plus, Minus, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCartStore } from '@/store/cartStore';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, getCountryPrice } from '@/lib/utils';
 
 export default function CartDrawer() {
   const { items, isOpen, closeCart, removeItem, updateQuantity, totalPrice } = useCartStore();
@@ -78,7 +78,7 @@ export default function CartDrawer() {
                           {item.product.name}
                         </p>
                         <p className="text-xs text-gray-500 mt-0.5">
-                          {item.product.locationLabel}
+                          {item.niyet} · {item.country}
                         </p>
                         <div className="flex flex-wrap gap-1.5 mt-2">
                           {item.wantsVideo && (
@@ -124,7 +124,7 @@ export default function CartDrawer() {
                         </button>
                       </div>
                       <span className="font-bold text-brand-green">
-                        {formatPrice(item.product.price * item.quantity)}
+                        {formatPrice(getCountryPrice(item.product, item.country) * item.quantity)}
                       </span>
                     </div>
                   </div>

@@ -1,31 +1,40 @@
+export type CategoryType = 'kucukbas' | 'buyukbas' | 'yemek';
+
 export type SacrificeType =
-  | 'kucukbas'
+  | 'keci'
+  | 'koyun'
+  | 'koc'
+  | 'buyukbas'
   | 'buyukbas-hisse'
-  | 'adak'
-  | 'akika'
-  | 'sukur'
-  | 'sadaka';
+  | 'yemek';
+
+export type NiyetType = 'Adak' | 'Akika' | 'Şükür' | 'Sadaka';
+
+export type DeliveryOption = 'kendim' | 'ihtiyac-sahipleri';
 
 export type LocationType = 'yurt-ici' | 'yurt-disi';
 
-export type DeliveryOption = 'kendim' | 'ihtiyac-sahipleri';
+export interface CountryPrice {
+  country: string;
+  price: number;
+}
 
 export interface Product {
   id: string;
   name: string;
   type: SacrificeType;
   typeLabel: string;
+  category: CategoryType;
   location: LocationType;
   locationLabel: string;
-  price: number;
-  originalPrice?: number;
+  countries: CountryPrice[];
   description: string;
   shortDescription: string;
   stock: number;
   slaughterDate: string;
   videoAvailable: boolean;
   featured: boolean;
-  image: string;
+  image?: string;
   weight?: string;
   shareCount?: number;
   tags: string[];
@@ -43,6 +52,8 @@ export interface CartItem {
   proxy: CartItemProxyInfo;
   wantsVideo: boolean;
   delivery: DeliveryOption;
+  country: string;
+  niyet: string;
 }
 
 export interface OrderFormData {

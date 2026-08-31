@@ -4,6 +4,7 @@ import { ShoppingCart, Menu, X, ChevronDown, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartStore } from '@/store/cartStore';
 import { cn } from '@/lib/utils';
+import logo from '@/assets/logo.png';
 
 const NAV_LINKS = [
   {
@@ -56,11 +57,11 @@ export default function Header() {
             Profesyonel kurban hizmeti — Türkiye geneli ve yurt dışı
           </span>
           <a
-            href="tel:+902121234567"
+            href="tel:+905340178867"
             className="flex items-center gap-1.5 text-white hover:text-brand-gold-light transition-colors ml-auto"
           >
             <Phone size={13} />
-            <span className="font-medium">0212 123 45 67</span>
+            <span className="font-medium">0534 017 88 67</span>
           </a>
         </div>
       </div>
@@ -70,13 +71,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16 gap-4">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-            <div className="w-8 h-8 bg-brand-green rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-sm">K</span>
-            </div>
-            <div className="leading-none">
-              <span className="font-bold text-lg text-brand-green">Keçi</span>
-              <span className="font-bold text-lg text-brand-gold">koyun</span>
-            </div>
+            <img src={logo} alt="Keçikoyun" className="h-11 w-auto" />
           </Link>
 
           {/* Desktop nav */}

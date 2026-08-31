@@ -3,37 +3,36 @@ import { motion } from 'framer-motion';
 import { Filter, SlidersHorizontal } from 'lucide-react';
 import { products } from '@/data/products';
 import ProductCard from '@/components/product/ProductCard';
-import type { SacrificeType, LocationType } from '@/types';
+import { getCountryPrice } from '@/lib/utils';
+import type { CategoryType, LocationType } from '@/types';
 
-const typeOptions: { value: SacrificeType | 'all'; label: string }[] = [
+const categoryOptions: { value: CategoryType | 'all'; label: string }[] = [
   { value: 'all', label: 'Tümü' },
   { value: 'kucukbas', label: 'Küçükbaş' },
-  { value: 'buyukbas-hisse', label: 'Büyükbaş Hisse' },
-  { value: 'adak', label: 'Adak' },
-  { value: 'akika', label: 'Akika' },
-  { value: 'sukur', label: 'Şükür' },
-  { value: 'sadaka', label: 'Sadaka' },
+  { value: 'buyukbas', label: 'Büyükbaş' },
+  { value: 'yemek', label: 'Yemek' },
 ];
 
 const locationOptions: { value: LocationType | 'all'; label: string }[] = [
   { value: 'all', label: 'Tüm Lokasyonlar' },
-  { value: 'yurt-ici', label: 'Yurt İçi' },
   { value: 'yurt-disi', label: 'Yurt Dışı' },
 ];
 
 export default function ProductsPage() {
-  const [typeFilter, setTypeFilter] = useState<SacrificeType | 'all'>('all');
+  const [categoryFilter, setCategoryFilter] = useState<CategoryType | 'all'>('all');
   const [locationFilter, setLocationFilter] = useState<LocationType | 'all'>('all');
   const [sortBy, setSortBy] = useState<'price-asc' | 'price-desc' | 'default'>('default');
 
-  let filtered = products.filter((p) => {
-    if (typeFilter !== 'all' && p.type !== typeFilter) return false;
-    if (locationFilter !== 'all' && p.location !== locationFilter) return false;
-    return true;
-  });
+  let filtered = products.filter(
+    (p) =>
+      (categoryFilter === 'all' || p.category === categoryFilter) &&
+      (locationFilter === 'all' || p.location === locationFilter)
+  );
 
-  if (sortBy === 'price-asc') filtered = [...filtered].sort((a, b) => a.price - b.price);
-  if (sortBy === 'price-desc') filtered = [...filtered].sort((a, b) => b.price - a.price);
+  if (sortBy === 'price-asc')
+    filtered = [...filtered].sort((a, b) => getCountryPrice(a) - getCountryPrice(b));
+  if (sortBy === 'price-desc')
+    filtered = [...filtered].sort((a, b) => getCountryPrice(b) - getCountryPrice(a));
 
   return (
     <div className="bg-[#FAFAF9] min-h-screen">
@@ -42,7 +41,7 @@ export default function ProductsPage() {
         <div className="container-site py-8">
           <h1 className="text-3xl font-bold text-gray-900">Kurbanlıklar</h1>
           <p className="text-gray-500 mt-1">
-            {filtered.length} kurbanlık listeleniyor
+            {filtered.length} bağış listeleniyor
           </p>
         </div>
       </div>
@@ -56,14 +55,14 @@ export default function ProductsPage() {
               <span className="font-medium">Filtrele:</span>
             </div>
 
-            {/* Type filter */}
+            {/* Category filter */}
             <div className="flex flex-wrap gap-1.5">
-              {typeOptions.map((opt) => (
+              {categoryOptions.map((opt) => (
                 <button
                   key={opt.value}
-                  onClick={() => setTypeFilter(opt.value)}
+                  onClick={() => setCategoryFilter(opt.value)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                    typeFilter === opt.value
+                    categoryFilter === opt.value
                       ? 'bg-brand-green text-white'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}

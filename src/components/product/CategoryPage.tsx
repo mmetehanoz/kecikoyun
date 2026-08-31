@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { products } from '@/data/products';
 import ProductCard from './ProductCard';
-import type { SacrificeType } from '@/types';
+import type { CategoryType } from '@/types';
 
 interface CategoryPageProps {
-  type: SacrificeType;
+  category: CategoryType;
   title: string;
   subtitle: string;
   description: string;
@@ -15,14 +15,14 @@ interface CategoryPageProps {
 }
 
 export default function CategoryPage({
-  type,
+  category,
   title,
   subtitle,
   description,
   emoji,
   color,
 }: CategoryPageProps) {
-  const filtered = products.filter((p) => p.type === type);
+  const filtered = products.filter((p) => p.category === category);
 
   return (
     <div className="bg-[#FAFAF9] min-h-screen">
@@ -55,7 +55,7 @@ export default function CategoryPage({
       <div className="container-site py-10">
         <div className="flex items-center justify-between mb-7">
           <p className="text-sm text-gray-500 font-medium">
-            {filtered.length} kurbanlık mevcut
+            {filtered.length} bağış mevcut
           </p>
         </div>
 

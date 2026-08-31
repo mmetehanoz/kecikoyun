@@ -93,7 +93,7 @@ export default function FAQPage() {
         <div className="mt-10 bg-brand-cream rounded-3xl p-6 text-center">
           <p className="font-semibold text-gray-900">Aradığınız cevabı bulamadınız mı?</p>
           <p className="text-sm text-gray-500 mt-1 mb-4">Müşteri hizmetlerimize ulaşabilirsiniz</p>
-          <a href="tel:+902121234567" className="btn-primary inline-flex">
+          <a href="tel:+905340178867" className="btn-primary inline-flex">
             Bizi Arayın
           </a>
         </div>

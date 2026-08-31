@@ -37,10 +37,10 @@ export default function ContactPage() {
             <h2 className="text-xl font-bold text-gray-900 mb-6">Bize Ulaşın</h2>
             <div className="space-y-5">
               {[
-                { Icon: Phone, label: 'Telefon', value: '0212 123 45 67', href: 'tel:+902121234567', detail: 'Pzt–Cmt, 09:00–18:00' },
-                { Icon: MessageSquare, label: 'WhatsApp', value: '0530 123 45 67', href: 'https://wa.me/905301234567', detail: '7/24 mesaj atabilirsiniz' },
+                { Icon: Phone, label: 'Telefon', value: '0534 017 88 67', href: 'tel:+905340178867', detail: 'Pzt–Cmt, 09:00–18:00' },
+                { Icon: MessageSquare, label: 'WhatsApp', value: '0534 017 88 67', href: 'https://wa.me/905340178867', detail: '7/24 mesaj atabilirsiniz' },
                 { Icon: Mail, label: 'E-posta', value: 'info@kecikoyun.com', href: 'mailto:info@kecikoyun.com', detail: '24 saat içinde yanıt' },
-                { Icon: MapPin, label: 'Adres', value: 'İstanbul, Türkiye', href: undefined, detail: 'Randevu ile ziyaret' },
+                { Icon: MapPin, label: 'Adres', value: 'Muratpaşa Mahallesi Uluyol Caddesi NO:17-19 Daire:68, Istanbul, Turkey', href: undefined, detail: 'Randevu ile ziyaret' },
                 { Icon: Clock, label: 'Çalışma Saatleri', value: 'Pzt–Cmt: 09:00–18:00', href: undefined, detail: 'Pazar: Kapalı' },
               ].map(({ Icon, label, value, href, detail }) => (
                 <div key={label} className="flex gap-4">

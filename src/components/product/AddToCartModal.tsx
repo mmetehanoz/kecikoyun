@@ -1,28 +1,30 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingCart, Video, Truck, User } from 'lucide-react';
+import { X, ShoppingCart, Video, Truck, User, Globe, Target } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, getCountryPrice } from '@/lib/utils';
 import type { Product, CartItemProxyInfo, DeliveryOption } from '@/types';
 
 interface AddToCartModalProps {
   product: Product;
+  country: string;
+  niyet: string;
   onClose: () => void;
 }
 
-export default function AddToCartModal({ product, onClose }: AddToCartModalProps) {
+export default function AddToCartModal({ product, country, niyet, onClose }: AddToCartModalProps) {
   const { addItem } = useCartStore();
   const [proxy, setProxy] = useState<CartItemProxyInfo>({
     name: '',
     phone: '',
-    purpose: '',
+    purpose: niyet,
   });
   const [wantsVideo, setWantsVideo] = useState(false);
   const [delivery, setDelivery] = useState<DeliveryOption>('ihtiyac-sahipleri');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addItem(product, proxy, wantsVideo, delivery);
+    addItem(product, proxy, wantsVideo, delivery, country, niyet);
     onClose();
   };
 
@@ -46,7 +48,9 @@ export default function AddToCartModal({ product, onClose }: AddToCartModalProps
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
             <div>
               <h3 className="font-bold text-gray-900">{product.name}</h3>
-              <p className="text-sm text-brand-green font-semibold">{formatPrice(product.price)}</p>
+              <p className="text-sm text-brand-green font-semibold">
+                {formatPrice(getCountryPrice(product, country))}
+              </p>
             </div>
             <button
               onClick={onClose}
@@ -90,17 +94,21 @@ export default function AddToCartModal({ product, onClose }: AddToCartModalProps
                     className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-green/30 focus:border-brand-green transition"
                   />
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">
-                    Kesim Niyeti / Amacı
-                  </label>
-                  <input
-                    type="text"
-                    value={proxy.purpose}
-                    onChange={(e) => setProxy({ ...proxy, purpose: e.target.value })}
-                    placeholder="örn. Kurban, Adak, Şükür..."
-                    className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-green/30 focus:border-brand-green transition"
-                  />
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="flex items-center gap-2 p-3 rounded-xl bg-brand-cream">
+                    <Target size={14} className="text-brand-green flex-shrink-0" />
+                    <div>
+                      <p className="text-[10px] text-gray-400 font-medium uppercase">Niyet</p>
+                      <p className="text-sm font-semibold text-gray-900">{niyet}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 p-3 rounded-xl bg-brand-cream">
+                    <Globe size={14} className="text-brand-green flex-shrink-0" />
+                    <div>
+                      <p className="text-[10px] text-gray-400 font-medium uppercase">Ülke</p>
+                      <p className="text-sm font-semibold text-gray-900">{country}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

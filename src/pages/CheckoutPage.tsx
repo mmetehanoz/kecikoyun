@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShieldCheck, CreditCard, Building2, ArrowLeft, Check } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
-import { formatPrice, generateOrderId } from '@/lib/utils';
+import { formatPrice, generateOrderId, getCountryPrice } from '@/lib/utils';
 import type { OrderFormData } from '@/types';
 import TurnstileWidget from '../components/security/TurnstileWidget';
 
@@ -318,10 +318,12 @@ export default function CheckoutPage() {
                         <p className="text-sm font-medium text-gray-900 truncate">
                           {item.product.name}
                         </p>
-                        <p className="text-xs text-gray-400">{item.product.locationLabel}</p>
+                        <p className="text-xs text-gray-400">
+                          {item.niyet} · {item.country}
+                        </p>
                       </div>
                       <span className="text-sm font-semibold text-gray-900 flex-shrink-0">
-                        {formatPrice(item.product.price * item.quantity)}
+                        {formatPrice(getCountryPrice(item.product, item.country) * item.quantity)}
                       </span>
                     </div>
                   ))}

@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin } from 'lucide-react';
+import darkIcon from '@/assets/dark-icon.png';
+import iyzico from '@/assets/iyzico-.png';
 
 export default function Footer() {
   return (
@@ -9,9 +11,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-brand-green rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-sm">K</span>
-              </div>
+              <img src={darkIcon} alt="Keçikoyun" className="w-8 h-8" />
               <div className="leading-none">
                 <span className="font-bold text-lg text-white">Keçi</span>
                 <span className="font-bold text-lg text-brand-gold">koyun</span>
@@ -88,8 +88,8 @@ export default function Footer() {
               <li className="flex items-start gap-2.5">
                 <Phone size={15} className="text-brand-gold mt-0.5 flex-shrink-0" />
                 <div>
-                  <a href="tel:+902121234567" className="hover:text-white transition-colors block">
-                    0212 123 45 67
+                  <a href="tel:+905340178867" className="hover:text-white transition-colors block">
+                    0534 017 88 67
                   </a>
                   <span className="text-gray-500 text-xs">Pzt–Cmt, 09:00–18:00</span>
                 </div>
@@ -102,7 +102,7 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-2.5">
                 <MapPin size={15} className="text-brand-gold mt-0.5 flex-shrink-0" />
-                <span>İstanbul, Türkiye</span>
+                <span>Muratpaşa Mahallesi Uluyol Caddesi NO:17-19 Daire:68, Istanbul, Turkey</span>
               </li>
             </ul>
           </div>
@@ -110,19 +110,27 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-gray-800">
-        <div className="container-site py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
+        <div className="container-site py-5 flex flex-col lg:flex-row items-center justify-between gap-4 text-xs text-gray-500">
           <p>© {new Date().getFullYear()} Keçikoyun. Tüm hakları saklıdır.</p>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
+            <Link to="/teslimat-iade-sartlari" className="hover:text-gray-300 transition-colors">
+              Teslimat ve İade Şartları
+            </Link>
             <Link to="/gizlilik-politikasi" className="hover:text-gray-300 transition-colors">
               Gizlilik Politikası
-            </Link>
-            <Link to="/kullanim-kosullari" className="hover:text-gray-300 transition-colors">
-              Kullanım Koşulları
             </Link>
             <Link to="/kvkk" className="hover:text-gray-300 transition-colors">
               KVKK
             </Link>
+            <Link to="/mesafeli-satis-sozlesmesi" className="hover:text-gray-300 transition-colors">
+              Mesafeli Satış Sözleşmesi
+            </Link>
           </div>
+          <img
+            src={iyzico}
+            alt="iyzico ile güvenli ödeme"
+            className="h-8 w-auto opacity-80"
+          />
         </div>
       </div>
     </footer>

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Trash2, Plus, Minus, ShoppingCart, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, getCountryPrice } from '@/lib/utils';
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, totalPrice } = useCartStore();
@@ -63,7 +63,7 @@ export default function CartPage() {
                       <div>
                         <h3 className="font-bold text-gray-900">{item.product.name}</h3>
                         <p className="text-xs text-gray-500 mt-0.5">
-                          {item.product.locationLabel} · {item.product.typeLabel}
+                          {item.niyet} · {item.country} · {item.product.typeLabel}
                         </p>
                       </div>
                       <button
@@ -111,7 +111,7 @@ export default function CartPage() {
                         </button>
                       </div>
                       <span className="font-bold text-brand-green text-lg">
-                        {formatPrice(item.product.price * item.quantity)}
+                        {formatPrice(getCountryPrice(item.product, item.country) * item.quantity)}
                       </span>
                     </div>
                   </div>
@@ -132,7 +132,7 @@ export default function CartPage() {
                       {item.product.name} × {item.quantity}
                     </span>
                     <span className="font-medium text-gray-900 flex-shrink-0">
-                      {formatPrice(item.product.price * item.quantity)}
+                      {formatPrice(getCountryPrice(item.product, item.country) * item.quantity)}
                     </span>
                   </div>
                 ))}

@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Layout from '@/components/layout/Layout';
+import ScrollToTop from '@/components/layout/ScrollToTop';
 
 const HomePage = lazy(() => import('@/pages/HomePage'));
 const ProductsPage = lazy(() => import('@/pages/ProductsPage'));
@@ -18,6 +19,10 @@ const AboutPage = lazy(() => import('@/pages/AboutPage'));
 const HowItWorksPage = lazy(() => import('@/pages/HowItWorksPage'));
 const FAQPage = lazy(() => import('@/pages/FAQPage'));
 const ContactPage = lazy(() => import('@/pages/ContactPage'));
+const TeslimatIadePage = lazy(() => import('@/pages/TeslimatIadePage'));
+const GizlilikPage = lazy(() => import('@/pages/GizlilikPage'));
+const KVKKPage = lazy(() => import('@/pages/KVKKPage'));
+const MesafeliSatisPage = lazy(() => import('@/pages/MesafeliSatisPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 5 * 60 * 1000 } },
@@ -35,6 +40,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <ScrollToTop />
         <Layout>
           <Suspense fallback={<PageLoader />}>
             <Routes>
@@ -53,6 +59,10 @@ export default function App() {
               <Route path="/nasil-calisir" element={<HowItWorksPage />} />
               <Route path="/sss" element={<FAQPage />} />
               <Route path="/iletisim" element={<ContactPage />} />
+              <Route path="/teslimat-iade-sartlari" element={<TeslimatIadePage />} />
+              <Route path="/gizlilik-politikasi" element={<GizlilikPage />} />
+              <Route path="/kvkk" element={<KVKKPage />} />
+              <Route path="/mesafeli-satis-sozlesmesi" element={<MesafeliSatisPage />} />
             </Routes>
           </Suspense>
         </Layout>
