@@ -9,14 +9,10 @@ import type { Product, Site, OrderFormData, CartItem } from '@/types';
  * aynı oturum üzerinden çalışır.
  */
 
+// Boş değer = aynı origin (göreli istekler). Prod'da frontend ve API aynı
+// alan adında (nginx proxy) servis edildiği için bu beklenen durumdur.
 const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const SESSION_KEY_STORAGE = 'kecikoyun_session_key';
-
-if (!API_BASE) {
-  // Geliştirici uyarısı: VITE_API_URL tanımlanmazsa API çağrıları çalışmaz.
-  // eslint-disable-next-line no-console
-  console.warn('[api] VITE_API_URL tanımlı değil. Backend bağlantısı çalışmayacak.');
-}
 
 function getSessionKey(): string {
   try {
@@ -76,6 +72,7 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   const res = await fetch(url, {
     method,
     credentials: 'include',
+    cache: 'no-store',
     headers: baseHeaders,
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });

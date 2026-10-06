@@ -29,7 +29,9 @@ export function useProducts() {
   const query = useQuery({
     queryKey: ['storefront', 'catalog'],
     queryFn: () => api.storefront.catalog(),
-    staleTime: 5 * 60 * 1000,
+    // Admin paneldeki fiyat/ürün değişiklikleri anında yansısın
+    staleTime: 0,
+    refetchOnMount: 'always',
     retry: 1,
   });
 
