@@ -56,12 +56,10 @@ interface RequestOptions {
 }
 
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  if (!API_BASE) throw new ApiError('API adresi yapılandırılmamış (VITE_API_URL).', 0, null);
+  // API_BASE boş olabilir: bu durumda istekler göreli (same-origin) gider.
 
   const { method = 'GET', body, params, headers = {} } = options;
   const url = `${API_BASE}${path}${buildQuery(params)}`;
-  // eslint-disable-next-line no-console
-  console.info('[api]', method, url);
 
   const baseHeaders: Record<string, string> = {
     'Content-Type': 'application/json',

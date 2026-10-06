@@ -25,14 +25,7 @@ export const DEFAULT_SITE: Site = {
  * Ürünleri backend storefront katalog endpoint'inden çeker.
  * Backend erişilemezse statik katalog verisine düşer (fallback).
  */
-let _loggedUseProducts = false;
-
 export function useProducts() {
-  if (!_loggedUseProducts) {
-    _loggedUseProducts = true;
-    // eslint-disable-next-line no-console
-    console.info('[storefront] useProducts hook invoked');
-  }
   const query = useQuery({
     queryKey: ['storefront', 'catalog'],
     queryFn: () => api.storefront.catalog(),
@@ -54,14 +47,7 @@ export function useProducts() {
   };
 }
 
-let _loggedUseSite = false;
-
 export function useSite() {
-  if (!_loggedUseSite) {
-    _loggedUseSite = true;
-    // eslint-disable-next-line no-console
-    console.info('[storefront] useSite hook invoked');
-  }
   const query = useQuery({
     queryKey: ['storefront', 'site'],
     queryFn: () => api.storefront.site(),
