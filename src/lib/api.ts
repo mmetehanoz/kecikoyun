@@ -60,6 +60,8 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
 
   const { method = 'GET', body, params, headers = {} } = options;
   const url = `${API_BASE}${path}${buildQuery(params)}`;
+  // eslint-disable-next-line no-console
+  console.info('[api]', method, url);
 
   const baseHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
