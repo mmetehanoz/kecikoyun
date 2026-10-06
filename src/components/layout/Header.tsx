@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Menu, X, ChevronDown, Phone } from 'lucide-react';
+import { ShoppingCart, Menu, X, ChevronDown, Phone, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartStore } from '@/store/cartStore';
+import { useSite } from '@/hooks/useStorefront';
 import { cn } from '@/lib/utils';
 import logo from '@/assets/logo.png';
 
@@ -30,6 +31,7 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const { items, toggleCart } = useCartStore();
+  const { site } = useSite();
   const location = useLocation();
   const cartCount = items.reduce((s, i) => s + i.quantity, 0);
 
@@ -56,13 +58,24 @@ export default function Header() {
           <span className="hidden sm:block text-white/80 text-xs">
             Profesyonel kurban hizmeti — Türkiye geneli ve yurt dışı
           </span>
-          <a
-            href="tel:+905340178867"
-            className="flex items-center gap-1.5 text-white hover:text-brand-gold-light transition-colors ml-auto"
-          >
-            <Phone size={13} />
-            <span className="font-medium">0534 017 88 67</span>
-          </a>
+          <div className="flex items-center gap-4 ml-auto">
+            <a
+              href={`tel:${site.phone.replace(/[^\d+]/g, '')}`}
+              className="flex items-center gap-1.5 text-white hover:text-brand-gold-light transition-colors"
+            >
+              <Phone size={13} />
+              <span className="font-medium">{site.phone}</span>
+            </a>
+            <a
+              href={`https://wa.me/${(site.whatsapp || site.phone).replace(/\D/g, '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:flex items-center gap-1.5 text-white hover:text-brand-gold-light transition-colors"
+            >
+              <MessageCircle size={13} />
+              <span className="font-medium">WhatsApp</span>
+            </a>
+          </div>
         </div>
       </div>
 

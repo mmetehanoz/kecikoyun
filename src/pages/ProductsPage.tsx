@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Filter, SlidersHorizontal } from 'lucide-react';
-import { products } from '@/data/products';
 import ProductCard from '@/components/product/ProductCard';
+import { useProducts } from '@/hooks/useStorefront';
 import { getCountryPrice } from '@/lib/utils';
 import type { CategoryType, LocationType } from '@/types';
 
@@ -22,6 +22,7 @@ export default function ProductsPage() {
   const [categoryFilter, setCategoryFilter] = useState<CategoryType | 'all'>('all');
   const [locationFilter, setLocationFilter] = useState<LocationType | 'all'>('all');
   const [sortBy, setSortBy] = useState<'price-asc' | 'price-desc' | 'default'>('default');
+  const { products } = useProducts();
 
   let filtered = products.filter(
     (p) =>

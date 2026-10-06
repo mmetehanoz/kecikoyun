@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin } from 'lucide-react';
+import { useSite } from '@/hooks/useStorefront';
 import darkIcon from '@/assets/dark-icon.png';
-import iyzico from '@/assets/iyzico-.png';
 
 export default function Footer() {
+  const { site } = useSite();
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="container-site py-14">
@@ -88,21 +89,21 @@ export default function Footer() {
               <li className="flex items-start gap-2.5">
                 <Phone size={15} className="text-brand-gold mt-0.5 flex-shrink-0" />
                 <div>
-                  <a href="tel:+905340178867" className="hover:text-white transition-colors block">
-                    0534 017 88 67
+                  <a href={`tel:${site.phone.replace(/[^\d+]/g, '')}`} className="hover:text-white transition-colors block">
+                    {site.phone}
                   </a>
                   <span className="text-gray-500 text-xs">Pzt–Cmt, 09:00–18:00</span>
                 </div>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail size={15} className="text-brand-gold flex-shrink-0" />
-                <a href="mailto:info@kecikoyun.com" className="hover:text-white transition-colors">
-                  info@kecikoyun.com
+                <a href={`mailto:${site.email}`} className="hover:text-white transition-colors">
+                  {site.email}
                 </a>
               </li>
               <li className="flex items-start gap-2.5">
                 <MapPin size={15} className="text-brand-gold mt-0.5 flex-shrink-0" />
-                <span>Muratpaşa Mahallesi Uluyol Caddesi NO:17-19 Daire:68, Istanbul, Turkey</span>
+                <span>{site.address}</span>
               </li>
             </ul>
           </div>
@@ -111,7 +112,7 @@ export default function Footer() {
 
       <div className="border-t border-gray-800">
         <div className="container-site py-5 flex flex-col lg:flex-row items-center justify-between gap-4 text-xs text-gray-500">
-          <p>© {new Date().getFullYear()} Keçikoyun. Tüm hakları saklıdır.</p>
+          <p>© {new Date().getFullYear()} Babil Yazılım. Tüm hakları saklıdır.</p>
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
             <Link to="/teslimat-iade-sartlari" className="hover:text-gray-300 transition-colors">
               Teslimat ve İade Şartları
@@ -126,11 +127,6 @@ export default function Footer() {
               Mesafeli Satış Sözleşmesi
             </Link>
           </div>
-          <img
-            src={iyzico}
-            alt="iyzico ile güvenli ödeme"
-            className="h-8 w-auto opacity-80"
-          />
         </div>
       </div>
     </footer>

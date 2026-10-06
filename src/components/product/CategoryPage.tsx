@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { products } from '@/data/products';
 import ProductCard from './ProductCard';
+import { useProducts } from '@/hooks/useStorefront';
 import type { CategoryType } from '@/types';
 
 interface CategoryPageProps {
@@ -22,6 +22,7 @@ export default function CategoryPage({
   emoji,
   color,
 }: CategoryPageProps) {
+  const { products } = useProducts();
   const filtered = products.filter((p) => p.category === category);
 
   return (

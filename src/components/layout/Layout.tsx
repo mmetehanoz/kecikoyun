@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import CartDrawer from '@/components/cart/CartDrawer';
+import FloatingActions from '@/components/common/FloatingActions';
 
 interface LayoutProps {
   children: ReactNode;
@@ -14,6 +15,7 @@ export default function Layout({ children }: LayoutProps) {
       <main className="flex-1">{children}</main>
       <Footer />
       <CartDrawer />
+      <FloatingActions />
     </div>
   );
 }

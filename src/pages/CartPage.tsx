@@ -1,11 +1,15 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Trash2, Plus, Minus, ShoppingCart, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingCart, ArrowRight, ArrowLeft, Building2, ShieldCheck } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
+import { useSite } from '@/hooks/useStorefront';
 import { formatPrice, getCountryPrice } from '@/lib/utils';
+import CopyValue from '@/components/common/CopyValue';
+import BankInfoButton from '@/components/common/BankInfoButton';
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, totalPrice } = useCartStore();
+  const { site } = useSite();
 
   if (items.length === 0) {
     return (
@@ -39,6 +43,24 @@ export default function CartPage() {
             </Link>
             <h1 className="text-2xl font-bold text-gray-900">Sepetim</h1>
           </div>
+        </div>
+
+        {/* Ödeme yöntemi vurgusu */}
+        <div className="mb-6 rounded-3xl bg-gradient-to-r from-brand-green to-brand-green-dark text-white p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 shadow-card">
+          <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center flex-shrink-0">
+            <ShieldCheck size={24} />
+          </div>
+          <div className="flex-1">
+            <p className="text-lg font-bold">Ödeme Yöntemi: Banka Havalesi / EFT</p>
+            <p className="text-white/85 text-sm mt-0.5">
+              Siparişi tamamlayın, size verilen <strong>sipariş kodunu</strong> havale açıklamasına
+              yazın ve dekontu WhatsApp'tan iletin.
+            </p>
+          </div>
+          <BankInfoButton
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white text-brand-green font-semibold px-5 py-3 hover:bg-white/90 transition flex-shrink-0"
+            label="Banka Bilgileri"
+          />
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
@@ -149,15 +171,24 @@ export default function CartPage() {
               </div>
 
               <Link to="/odeme" className="btn-primary w-full justify-center">
-                Siparişi Tamamla
+                Bağışı Tamamla
                 <ArrowRight size={16} />
               </Link>
 
-              <div className="flex items-center justify-center gap-3 mt-4">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png" alt="Mastercard" className="h-5 opacity-50" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/1280px-Visa_Inc._logo.svg.png" alt="Visa" className="h-4 opacity-50" />
+              <div className="mt-4 rounded-2xl border-2 border-brand-green/20 bg-brand-green/5 p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Building2 size={16} className="text-brand-green" />
+                  <p className="text-sm font-bold text-gray-900">Banka Bilgileri</p>
+                </div>
+                <div className="rounded-xl bg-white border border-gray-100 px-3">
+                  <CopyValue label="Banka" value={site.bank.name} />
+                  <CopyValue label="IBAN" value={site.bank.iban} />
+                  <CopyValue label="Hesap Adı" value={site.bank.accountHolder} />
+                </div>
+                <p className="text-[11px] text-gray-500 mt-2">
+                  Ödeme sonrası verilen sipariş kodunu açıklamaya yazın.
+                </p>
               </div>
-              <p className="text-center text-xs text-gray-400 mt-2">Güvenli SSL ödeme</p>
             </div>
           </div>
         </div>

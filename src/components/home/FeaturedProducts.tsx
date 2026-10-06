@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { products } from '@/data/products';
 import ProductCard from '@/components/product/ProductCard';
+import { useProducts } from '@/hooks/useStorefront';
 
 export default function FeaturedProducts() {
+  const { products } = useProducts();
   const featured = products.filter((p) => p.featured);
 
   return (

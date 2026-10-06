@@ -3,7 +3,10 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShieldCheck, CreditCard, Building2, ArrowLeft, Check } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
-import { formatPrice, generateOrderId, getCountryPrice } from '@/lib/utils';
+import { api } from '@/lib/api';
+import { useSite } from '@/hooks/useStorefront';
+import { formatPrice, getCountryPrice } from '@/lib/utils';
+import CopyValue from '@/components/common/CopyValue';
 import type { OrderFormData } from '@/types';
 import TurnstileWidget from '../components/security/TurnstileWidget';
 
@@ -14,8 +17,11 @@ const labelClass = 'block text-sm font-medium text-gray-700 mb-1.5';
 
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCartStore();
+  const { site } = useSite();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [completed, setCompleted] = useState(false);
   const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
   const [form, setForm] = useState<OrderFormData>({
@@ -26,7 +32,7 @@ export default function CheckoutPage() {
     address: '',
     city: '',
     billingName: '',
-    paymentMethod: 'credit-card',
+    paymentMethod: 'bank-transfer',
     acceptTerms: false,
     acceptKvkk: false,
   });
@@ -54,21 +60,126 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.acceptTerms || !form.acceptKvkk) return;
+    setSubmitError('');
+
+    if (!form.acceptTerms || !form.acceptKvkk) {
+      setSubmitError('Lütfen sözleşmeleri onaylayın.');
+      return;
+    }
+
+    if (form.paymentMethod === 'credit-card') {
+      setSubmitError('Kredi kartı ile ödeme yakında aktif olacak. Lütfen Banka Havalesi/EFT seçin.');
+      return;
+    }
+
+    if (
+      !form.firstName ||
+      !form.lastName ||
+      !form.email ||
+      !form.phone ||
+      !form.address ||
+      !form.city
+    ) {
+      setSubmitError('Lütfen zorunlu (*) alanları doldurun.');
+      return;
+    }
+
+    const phoneDigits = form.phone.replace(/\D/g, '');
+    if (!phoneDigits.startsWith('0') || phoneDigits.length !== 11) {
+      setSubmitError('Telefon numarası 0 (5XX) XXX XX XX formatında olmalıdır.');
+      return;
+    }
 
     if (turnstileSiteKey && !turnstileToken) {
       setTurnstileError('Lütfen güvenlik doğrulamasını tamamlayın.');
       return;
     }
 
+    if (items.some((i) => !i.product.donationId)) {
+      setSubmitError('Ürün bilgisi güncel değil. Lütfen sayfayı yenileyip tekrar deneyin.');
+      return;
+    }
+
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    const orderId = generateOrderId();
-    clearCart();
-    navigate(`/siparis-takibi?kod=${orderId}&success=1`);
+    try {
+      // Önceki denemeden kalan guest sepeti temizle (best-effort).
+      try {
+        await api.clearServerCart();
+      } catch {
+        /* oturum yoksa yok say */
+      }
+
+      const createdSubmissionIds: string[] = [];
+
+      for (const item of items) {
+        const unitPrice = getCountryPrice(item.product, item.country);
+        const formData: Record<string, unknown> = {
+          proxy_name: item.proxy.name,
+          proxy_phone: item.proxy.phone,
+          proxy_purpose: item.proxy.purpose,
+          delivery: item.delivery,
+          wants_video: item.wantsVideo,
+          country: item.country,
+          niyet: item.niyet,
+          donor_name: `${form.firstName} ${form.lastName}`.trim(),
+          donor_email: form.email,
+          donor_phone: form.phone,
+          donor_address: form.address,
+          donor_city: form.city,
+          donor_zip_code: form.taxNumber || '',
+        };
+
+        const submission = await api.orders.createSubmission({
+          donation: item.product.donationId as string,
+          amount: unitPrice,
+          currency: item.product.currencyId,
+          selected_country: item.country,
+          donation_intent: item.niyet,
+          donor_name: `${form.firstName} ${form.lastName}`.trim(),
+          donor_email: form.email,
+          donor_phone: form.phone,
+          form_data: formData,
+        });
+        createdSubmissionIds.push(submission.id);
+
+        const cartItem = await api.orders.addToCart(submission.id);
+        if (item.quantity > 1 && cartItem?.id) {
+          await api.orders.updateQuantity(cartItem.id, item.quantity);
+        }
+      }
+
+      const order = await api.orders.createBankTransferOrder({ contactInfo: form });
+
+      // Sipariş numarasını her bağış başvurusuna referans olarak yaz — admin
+      // panelindeki "Eksik Bağışlar"da dekont ile eşleştirilebilsin.
+      // Not: form_data burada GÖNDERİLMEZ; aksi halde sunucunun eklediği
+      // donation_intent / donor alanları ezilir.
+      await Promise.all(
+        createdSubmissionIds.map((id) =>
+          api.orders
+            .updateSubmission(id, {
+              payment_id: order.order_number,
+              payment_source: 'bank_transfer',
+            })
+            .catch(() => undefined)
+        )
+      );
+
+      setCompleted(true);
+      clearCart();
+      navigate(`/odeme/basarili?kod=${order.order_number}`, { replace: true });
+    } catch (err) {
+      setSubmitError(
+        err instanceof Error ? err.message : 'Sipariş oluşturulamadı. Lütfen tekrar deneyin.'
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  if (items.length === 0) {
+  // Sipariş başarıyla oluşturulduğunda sepet temizlenir; bu durumda başarı
+  // sayfasına giden yönlendirmeyi engellememek için guard'ı atla.
+  if (items.length === 0 && !completed) {
     return <Navigate to="/sepet" replace />;
   }
 
@@ -140,19 +251,21 @@ export default function CheckoutPage() {
                   </div>
                 </div>
                 <div className="mt-4">
-                  <label className={labelClass}>Adres</label>
+                  <label className={labelClass}>Adres <Required /></label>
                   <textarea
+                    required
                     className={inputClass + ' resize-none'}
                     rows={2}
                     value={form.address}
                     onChange={(e) => set('address', e.target.value)}
-                    placeholder="Açık adresiniz (teslim için gerekebilir)"
+                    placeholder="Açık adresiniz"
                   />
                 </div>
                 <div className="mt-4">
-                  <label className={labelClass}>Şehir</label>
+                  <label className={labelClass}>Şehir <Required /></label>
                   <input
                     type="text"
+                    required
                     className={inputClass}
                     value={form.city}
                     onChange={(e) => set('city', e.target.value)}
@@ -189,22 +302,30 @@ export default function CheckoutPage() {
               <Section title="Ödeme Yöntemi">
                 <div className="grid sm:grid-cols-3 gap-3 mb-5">
                   {[
-                    { value: 'credit-card', label: 'Kredi Kartı', Icon: CreditCard },
-                    { value: 'bank-transfer', label: 'Banka Havalesi', Icon: Building2 },
-                    { value: 'eft', label: 'EFT', Icon: Building2 },
-                  ].map(({ value, label, Icon }) => (
+                    { value: 'credit-card', label: 'Kredi Kartı', Icon: CreditCard, disabled: true },
+                    { value: 'bank-transfer', label: 'Banka Havalesi', Icon: Building2, disabled: false },
+                    { value: 'eft', label: 'EFT', Icon: Building2, disabled: false },
+                  ].map(({ value, label, Icon, disabled }) => (
                     <button
                       key={value}
                       type="button"
-                      onClick={() => set('paymentMethod', value)}
-                      className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 font-medium text-sm transition-all ${
-                        form.paymentMethod === value
+                      disabled={disabled}
+                      onClick={() => !disabled && set('paymentMethod', value)}
+                      className={`relative flex flex-col items-center gap-2 p-4 rounded-2xl border-2 font-medium text-sm transition-all ${
+                        disabled
+                          ? 'border-gray-100 text-gray-300 cursor-not-allowed'
+                          : form.paymentMethod === value
                           ? 'border-brand-green bg-brand-green/5 text-brand-green'
                           : 'border-gray-200 text-gray-600 hover:border-brand-green/50'
                       }`}
                     >
                       <Icon size={20} />
                       {label}
+                      {disabled && (
+                        <span className="absolute top-2 right-2 text-[10px] font-semibold bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded-full">
+                          Yakında
+                        </span>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -256,13 +377,16 @@ export default function CheckoutPage() {
                 )}
 
                 {form.paymentMethod !== 'credit-card' && (
-                  <div className="bg-brand-cream rounded-2xl p-4 text-sm text-gray-700">
-                    <p className="font-semibold text-gray-900 mb-2">Banka Bilgileri</p>
-                    <p>Banka: <strong>Ziraat Bankası</strong></p>
-                    <p>IBAN: <strong>TR00 0000 0000 0000 0000 0000 00</strong></p>
-                    <p>Hesap Adı: <strong>Keçikoyun Ticaret Ltd. Şti.</strong></p>
-                    <p className="mt-2 text-gray-500 text-xs">
-                      Havale açıklamasına sipariş kodunuzu yazmayı unutmayın.
+                  <div className="bg-brand-green/5 border-2 border-brand-green/20 rounded-2xl p-4">
+                    <p className="font-bold text-gray-900 mb-2">Banka Bilgileri (Havale / EFT)</p>
+                    <div className="rounded-xl bg-white border border-gray-100 px-3">
+                      <CopyValue label="Banka" value={site.bank.name} />
+                      <CopyValue label="IBAN" value={site.bank.iban} />
+                      <CopyValue label="Hesap Adı" value={site.bank.accountHolder} />
+                    </div>
+                    <p className="mt-2 text-gray-600 text-xs">
+                      Siparişi onayladıktan sonra size verilen <strong>sipariş kodunu</strong> havale
+                      açıklamasına yazın ve dekontu WhatsApp üzerinden bize iletin.
                     </p>
                   </div>
                 )}
@@ -353,6 +477,12 @@ export default function CheckoutPage() {
                     error={turnstileError}
                   />
                 </div>
+
+                {submitError && (
+                  <p className="mb-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-3 py-2">
+                    {submitError}
+                  </p>
+                )}
 
                 <button
                   type="submit"

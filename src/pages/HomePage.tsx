@@ -1,4 +1,5 @@
 import HeroSection from '@/components/home/HeroSection';
+import BankInfoHighlight from '@/components/home/BankInfoHighlight';
 import QuickCategoryCards from '@/components/home/QuickCategoryCards';
 import HowItWorksSection from '@/components/home/HowItWorksSection';
 import TrustSection from '@/components/home/TrustSection';
@@ -11,6 +12,7 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
+      <BankInfoHighlight />
       <QuickCategoryCards />
       <HowItWorksSection />
       <TrustSection />

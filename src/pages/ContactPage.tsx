@@ -1,21 +1,39 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, Clock, MessageSquare, Send, Check } from 'lucide-react';
+import { api } from '@/lib/api';
+import { useSite } from '@/hooks/useStorefront';
 
 const inputClass =
   'w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-green/30 focus:border-brand-green transition placeholder-gray-400';
 
 export default function ContactPage() {
+  const { site } = useSite();
   const [sent, setSent] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const phoneHref = `tel:${site.phone.replace(/[^\d+]/g, '')}`;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setSent(true);
-    setLoading(false);
+    setError(null);
+    try {
+      await api.contact.send({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        subject: form.subject || 'Genel Bilgi',
+        message: form.message,
+      });
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Mesaj gönderilemedi. Lütfen tekrar deneyin.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -37,10 +55,10 @@ export default function ContactPage() {
             <h2 className="text-xl font-bold text-gray-900 mb-6">Bize Ulaşın</h2>
             <div className="space-y-5">
               {[
-                { Icon: Phone, label: 'Telefon', value: '0534 017 88 67', href: 'tel:+905340178867', detail: 'Pzt–Cmt, 09:00–18:00' },
-                { Icon: MessageSquare, label: 'WhatsApp', value: '0534 017 88 67', href: 'https://wa.me/905340178867', detail: '7/24 mesaj atabilirsiniz' },
-                { Icon: Mail, label: 'E-posta', value: 'info@kecikoyun.com', href: 'mailto:info@kecikoyun.com', detail: '24 saat içinde yanıt' },
-                { Icon: MapPin, label: 'Adres', value: 'Muratpaşa Mahallesi Uluyol Caddesi NO:17-19 Daire:68, Istanbul, Turkey', href: undefined, detail: 'Randevu ile ziyaret' },
+                { Icon: Phone, label: 'Telefon', value: site.phone, href: phoneHref, detail: 'Pzt–Cmt, 09:00–18:00' },
+                { Icon: MessageSquare, label: 'WhatsApp', value: site.phone, href: `https://wa.me/${site.phone.replace(/[^\d]/g, '')}`, detail: '7/24 mesaj atabilirsiniz' },
+                { Icon: Mail, label: 'E-posta', value: site.email, href: `mailto:${site.email}`, detail: '24 saat içinde yanıt' },
+                { Icon: MapPin, label: 'Adres', value: site.address, href: undefined, detail: 'Randevu ile ziyaret' },
                 { Icon: Clock, label: 'Çalışma Saatleri', value: 'Pzt–Cmt: 09:00–18:00', href: undefined, detail: 'Pazar: Kapalı' },
               ].map(({ Icon, label, value, href, detail }) => (
                 <div key={label} className="flex gap-4">
@@ -146,6 +164,12 @@ export default function ContactPage() {
                     placeholder="Mesajınızı buraya yazın..."
                   />
                 </div>
+
+                {error && (
+                  <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-3 py-2">
+                    {error}
+                  </p>
+                )}
 
                 <button
                   type="submit"

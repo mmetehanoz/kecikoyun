@@ -21,6 +21,8 @@ export interface CountryPrice {
 
 export interface Product {
   id: string;
+  donationId?: string;
+  currencyId?: number;
   name: string;
   type: SacrificeType;
   typeLabel: string;
@@ -102,4 +104,43 @@ export interface Order {
   slaughterDate: string;
   videoUrl?: string;
   trackingCode: string;
+}
+
+export interface BankInfo {
+  name: string;
+  iban: string;
+  accountHolder: string;
+}
+
+export interface Site {
+  name: string;
+  siteName: string;
+  phone: string;
+  email: string;
+  address: string;
+  website: string;
+  logo: string;
+  slaughterDate: string;
+  whatsapp: string;
+  bank: BankInfo;
+}
+
+export interface ApiOrder {
+  id: string;
+  order_number: string;
+  total_amount: string;
+  status: string;
+  payment_method: string;
+  payment_status: string;
+  payment_source: string;
+  contact_info: Record<string, unknown>;
+  items: Array<{
+    id: string;
+    donation_title: string;
+    donation_category: string;
+    amount: string;
+    form_data: Record<string, unknown>;
+    created_at: string;
+  }>;
+  created_at: string;
 }

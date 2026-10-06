@@ -14,6 +14,7 @@ const SukurPage = lazy(() => import('@/pages/SukurPage'));
 const SadakaPage = lazy(() => import('@/pages/SadakaPage'));
 const CartPage = lazy(() => import('@/pages/CartPage'));
 const CheckoutPage = lazy(() => import('@/pages/CheckoutPage'));
+const PaymentSuccessPage = lazy(() => import('@/pages/PaymentSuccessPage'));
 const OrderTrackingPage = lazy(() => import('@/pages/OrderTrackingPage'));
 const AboutPage = lazy(() => import('@/pages/AboutPage'));
 const HowItWorksPage = lazy(() => import('@/pages/HowItWorksPage'));
@@ -54,6 +55,7 @@ export default function App() {
               <Route path="/sadaka" element={<SadakaPage />} />
               <Route path="/sepet" element={<CartPage />} />
               <Route path="/odeme" element={<CheckoutPage />} />
+              <Route path="/odeme/basarili" element={<PaymentSuccessPage />} />
               <Route path="/siparis-takibi" element={<OrderTrackingPage />} />
               <Route path="/hakkimizda" element={<AboutPage />} />
               <Route path="/nasil-calisir" element={<HowItWorksPage />} />
